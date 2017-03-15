@@ -84,7 +84,8 @@
           new-view-id (index->tab index)]
       (when-not (= view-id new-view-id)
         (reset! swiped? true)
-        (dispatch [:navigate-to-tab new-view-id])))))
+        (when new-view-id
+          (dispatch [:navigate-to-tab new-view-id]))))))
 
 (defn start-scrolling-loop
   "Loop that synchronizes tabs scrolling to avoid an inconsistent state."
