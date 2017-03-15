@@ -100,13 +100,14 @@
     (recur (a/<! scroll-start))))
 
 (defn main-tabs []
-  (let [view-id      (subscribe [:get :view-id])
-        prev-view-id (subscribe [:get :prev-view-id])
-        tabs-hidden? (subscribe [:tabs-hidden?])
-        main-swiper  (r/atom nil)
-        swiped?      (r/atom false)
-        scroll-start (a/chan 10)
-        scroll-ended (a/chan 10)]
+  (let [view-id           (subscribe [:get :view-id])
+        prev-view-id      (subscribe [:get :prev-view-id])
+        tabs-hidden?      (subscribe [:tabs-hidden?])
+        main-swiper       (r/atom nil)
+        swiped?           (r/atom false)
+        scroll-start      (a/chan 10)
+        scroll-ended      (a/chan 10)
+        tabs-were-hidden? (atom @tabs-hidden?)]
     (r/create-class
       {:component-did-mount
        #(start-scrolling-loop scroll-start scroll-ended)
@@ -114,9 +115,10 @@
        (fn []
          (if @swiped?
            (reset! swiped? false)
-           (when @main-swiper
+           (when (and (= @tabs-were-hidden? @tabs-hidden?) @main-swiper)
              (let [to (scroll-to @prev-view-id @view-id)]
-               (a/put! scroll-start [@main-swiper to])))))
+               (a/put! scroll-start [@main-swiper to]))))
+         (reset! tabs-were-hidden? @tabs-hidden?))
        :reagent-render
        (fn []
          [view common-st/flex
