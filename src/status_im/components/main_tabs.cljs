@@ -101,6 +101,7 @@
 (defn main-tabs []
   (let [view-id      (subscribe [:get :view-id])
         prev-view-id (subscribe [:get :prev-view-id])
+        tabs-hidden? (subscribe [:tabs-hidden?])
         main-swiper  (r/atom nil)
         swiped?      (r/atom false)
         scroll-start (a/chan 10)
@@ -123,7 +124,7 @@
            [drawer-view
             [view {:style common-st/flex}
              [swiper (merge
-                      (st/main-swiper false)
+                      (st/main-swiper @tabs-hidden?)
                        {:index                  (get-tab-index @view-id)
                         :loop                   false
                         :ref                    #(reset! main-swiper %)
@@ -134,4 +135,5 @@
              [tabs {:selected-view-id @view-id
                     :prev-view-id     @prev-view-id
                     :tab-list         tab-list}]
-             [bottom-shadow-view]]]]])})))
+             (when-not @tabs-hidden?
+               [bottom-shadow-view])]]]])})))
