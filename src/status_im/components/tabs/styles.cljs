@@ -14,12 +14,11 @@
 
 (defn tabs-container [hidden?]
   {:position         :absolute
-   :bottom           0
+   :bottom           (if hidden? (- tabs-height) 0)
    :left             0
    :right            0
    :height           tabs-height
    :background-color st/color-white
-   :margin-bottom    (if hidden? (- tabs-height) 0)
    :transform        [{:translateY 1}]})
 
 (def tabs-container-line
@@ -58,10 +57,10 @@
    :justifyContent   :center
    :alignItems       :center})
 
-(def main-swiper
+(defn main-swiper [tabs-hidden?]
   {:position         :absolute
    :top              0
    :left             0
    :right            0
-   :bottom           tabs-height
+   :bottom           (if tabs-hidden? 0 tabs-height)
    :shows-pagination false})

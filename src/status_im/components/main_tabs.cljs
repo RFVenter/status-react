@@ -123,7 +123,7 @@
            [drawer-view
             [view {:style common-st/flex}
              [swiper (merge
-                       st/main-swiper
+                      (st/main-swiper false)
                        {:index                  (get-tab-index @view-id)
                         :loop                   false
                         :ref                    #(reset! main-swiper %)
